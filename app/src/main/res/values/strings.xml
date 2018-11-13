@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Smart Alarm</string>
+    <string name="instruction_1">Укажите нужное вам место на карте:</string>
+    <string name="api_key">5b313667-b970-4bca-8b1c-0d867e837a03</string>
+    <string name="instruction_2">Изменить время</string>
+</resources>
