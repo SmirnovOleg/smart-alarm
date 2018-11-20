@@ -10,4 +10,6 @@
     <string name="date_title">Дата</string>
     <string name="location_title">Место</string>
     <string name="welcome">Добро пожаловать в Smart Planner! Нажмите +, чтобы добавить новую задачу</string>
+    <string name="current_time_title">Установленные параметры:</string>
+    <string name="alarm_complete">Напоминание установлено</string>
 </resources>

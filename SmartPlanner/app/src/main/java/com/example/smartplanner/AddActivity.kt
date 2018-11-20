@@ -13,8 +13,11 @@ import kotlinx.android.synthetic.main.activity_add.*
 import android.widget.SimpleAdapter
 import java.util.*
 import android.widget.TimePicker
-
-
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.Context.ALARM_SERVICE
 
 class AddActivity : AppCompatActivity() {
 
@@ -26,12 +29,27 @@ class AddActivity : AppCompatActivity() {
 
         createListView()
         setListViewListener()
+        setCurrentTimeTextView()
+
+        setAlarmBtn.setOnClickListener {
+            val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val myIntent = Intent(this, AlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0)
+
+            manager.set(AlarmManager.RTC_WAKEUP, dateAndTime.timeInMillis, pendingIntent)
+            Toast.makeText(this, getString(R.string.alarm_complete), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setCurrentTimeTextView() {
+        currentTimeTextView.text = dateAndTime.time.toString()
     }
 
     private val timePickerListener = TimePickerDialog.OnTimeSetListener {
             view, hourOfDay, minute ->
         dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay)
         dateAndTime.set(Calendar.MINUTE, minute)
+        setCurrentTimeTextView()
     }
 
     private val datePickerListener = DatePickerDialog.OnDateSetListener {
@@ -39,6 +57,7 @@ class AddActivity : AppCompatActivity() {
         dateAndTime.set(Calendar.YEAR, year)
         dateAndTime.set(Calendar.MONTH, month)
         dateAndTime.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        setCurrentTimeTextView()
     }
 
     private fun setListViewListener() {
