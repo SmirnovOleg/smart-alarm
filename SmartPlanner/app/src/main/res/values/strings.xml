@@ -12,4 +12,5 @@
     <string name="welcome">Добро пожаловать в Smart Planner! Нажмите +, чтобы добавить новую задачу</string>
     <string name="current_time_title">Установленные параметры:</string>
     <string name="alarm_complete">Напоминание установлено</string>
+    <string name="cancel">cancel</string>
 </resources>

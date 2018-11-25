@@ -39,6 +39,15 @@ class AddActivity : AppCompatActivity() {
             manager.set(AlarmManager.RTC_WAKEUP, dateAndTime.timeInMillis, pendingIntent)
             Toast.makeText(this, getString(R.string.alarm_complete), Toast.LENGTH_SHORT).show()
         }
+
+        cancelBtn.setOnClickListener { _ ->
+            startMainActivity()
+        }
+    }
+
+    private fun startMainActivity() {
+        val intent = Intent(this.applicationContext, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun setCurrentTimeTextView() {
@@ -63,9 +72,7 @@ class AddActivity : AppCompatActivity() {
     private fun setListViewListener() {
         actionsListView.onItemClickListener = AdapterView.OnItemClickListener {
                     parent, view, position, id ->
-
             val itemValue = actionsListView.getItemAtPosition(position) as HashMap<*, *>
-
             when(id) {
                 0L -> {
                     TimePickerDialog(
@@ -84,6 +91,10 @@ class AddActivity : AppCompatActivity() {
                         dateAndTime.get(Calendar.MONTH),
                         dateAndTime.get(Calendar.DAY_OF_MONTH)
                     ).show()
+                }
+                2L -> {
+                    val intent: Intent? = Intent(this.applicationContext, MapActivity::class.java)
+                    startActivity(intent)
                 }
             }
 

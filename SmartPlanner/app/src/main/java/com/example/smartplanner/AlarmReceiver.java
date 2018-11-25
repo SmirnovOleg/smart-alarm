@@ -13,10 +13,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         try {
-            Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            Uri notify = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             Ringtone ringtone = RingtoneManager.getRingtone(context, notify);
             ringtone.play();
-            Toast.makeText(context, "ALARM!!!", Toast.LENGTH_LONG).show();
         }
         catch (Exception e) {
             e.printStackTrace();
