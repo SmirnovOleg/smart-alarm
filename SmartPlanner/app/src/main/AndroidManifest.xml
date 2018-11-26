@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.smartplanner">
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -17,6 +23,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddActivity">
+        </activity>
+        <activity android:name=".TriggeredActivity">
+        </activity>
+        <activity
+                android:name=".TriggerredActivity"
+                android:label="@string/title_activity_triggerred"
+                android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

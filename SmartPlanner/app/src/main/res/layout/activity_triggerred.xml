@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".TriggerredActivity">
+
+    <android.support.design.widget.AppBarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <TextView
+                android:text="ALARM"
+                android:textSize="20pt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textView"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_triggerred" android:id="@+id/include"/>
+
+    <Button
+            android:id="@+id/shutBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20sp"
+            android:text="SHUT UP"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_anchorGravity="right|bottom" app:layout_anchor="@+id/include"/>
+
+</android.support.design.widget.CoordinatorLayout>
