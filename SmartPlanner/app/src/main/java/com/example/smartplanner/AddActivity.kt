@@ -1,8 +1,8 @@
 package com.example.smartplanner
 
-import android.app.DatePickerDialog
+import android.annotation.SuppressLint
+import android.app.*
 import android.app.ProgressDialog.show
-import android.app.TimePickerDialog
 import android.icu.util.UniversalTimeScale.toLong
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,15 +13,22 @@ import kotlinx.android.synthetic.main.activity_add.*
 import android.widget.SimpleAdapter
 import java.util.*
 import android.widget.TimePicker
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.Context.ALARM_SERVICE
+import android.text.format.DateUtils
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import android.widget.SeekBar
+import kotlinx.android.synthetic.main.activity_add.view.*
+
 
 class AddActivity : AppCompatActivity() {
 
     private val dateAndTime = Calendar.getInstance()
+    val REQUEST_CODE = 124
+    private var routeTime = 0L
+    private var preparingTime = 60L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +38,22 @@ class AddActivity : AppCompatActivity() {
         setListViewListener()
         setCurrentTimeTextView()
 
+        seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                preparingTime = progress.toLong()
+                seekBarText.text = "Время, чтобы собраться: ${preparingTime} минут"
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
         okBtn.setOnClickListener{ _ ->
 
-            Toast.makeText(this, "Напоминание установлено", Toast.LENGTH_LONG).show();
-            val ResultIntent = Intent(this, MainActivity::class.java)
-            ResultIntent.putExtra("dateandtime", dateAndTime.timeInMillis.toLong())
+            val ResultIntent = Intent(this, MainActivity::class.java).apply {
+                putExtra("dateandtime", dateAndTime.timeInMillis.toLong())
+                putExtra("routeTime", routeTime * 60_000L)
+                putExtra("preparingTime", preparingTime * 60_000L)
+            }
             setResult(android.app.Activity.RESULT_OK, ResultIntent)
             finish()
         }
@@ -45,8 +63,23 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE)
+        {
+            if (resultCode == Activity.RESULT_OK)
+            {
+                routeTime = data!!.getStringExtra("routeTime").toLong();
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun setCurrentTimeTextView() {
-        currentTimeTextView.text = dateAndTime.time.toString()
+        val date = DateUtils.formatDateTime(this, dateAndTime.timeInMillis, DateUtils.FORMAT_SHOW_DATE)
+        val time = DateUtils.formatDateTime(this, dateAndTime.timeInMillis, DateUtils.FORMAT_SHOW_TIME)
+        currentTimeTextView.text = "$time, $date"
     }
 
     private val timePickerListener = TimePickerDialog.OnTimeSetListener {
@@ -88,8 +121,8 @@ class AddActivity : AppCompatActivity() {
                     ).show()
                 }
                 2L -> {
-                    val intent: Intent? = Intent(this.applicationContext, MapActivity::class.java)
-                    startActivity(intent)
+                    val intent = Intent(this.applicationContext, MapActivity::class.java);
+                    startActivityForResult(intent, REQUEST_CODE)
                 }
             }
 

@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
             val intent = Intent(this.applicationContext, AddActivity::class.java);
             intent.putExtra("request",alarm_number);
-
             startActivityForResult(intent, REQUEST_CODE)
         }
     }
@@ -38,13 +37,25 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_CODE)
         {
-            if (resultCode == Activity.RESULT_OK)
-            {
+            if (resultCode == Activity.RESULT_OK) {
                 val myintent = Intent(this, TriggerredActivity::class.java)
-                val pendingIntent= PendingIntent.getActivity(this, 0, myintent, PendingIntent.FLAG_ONE_SHOT)
+                val pendingIntent = PendingIntent.getActivity(
+                    this, 0, myintent, PendingIntent.FLAG_ONE_SHOT
+                )
 
-                val GotResult = data!!.getLongExtra("dateandtime",-1);
-                manager?.set(AlarmManager.RTC_WAKEUP, GotResult, pendingIntent)
+                val dateAndTime = data!!.getLongExtra("dateandtime", 0)
+                val routeTime = data!!.getLongExtra("routeTime", 0)
+                val preparingTime = data!!.getLongExtra("preparingTime", 0)
+
+                Toast.makeText(this, "*Замена будильника: ${dateAndTime} ${dateAndTime - routeTime - preparingTime}", Toast.LENGTH_LONG).show();
+
+                val alarmTime = dateAndTime - routeTime - preparingTime
+                if (alarmTime > 0) {
+                    //manager?.set(AlarmManager.RTC_WAKEUP, dateAndTime, pendingIntent)
+                    Toast.makeText(this, "Напоминание установлено", Toast.LENGTH_LONG).show();
+                }
+                else
+                    Toast.makeText(this, "Некорректное время", Toast.LENGTH_LONG).show();
             }
         }
     }

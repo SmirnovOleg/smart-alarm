@@ -1,51 +1,134 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Yandex Map</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-        <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no" />
-        <script type="text/javascript">
-                ymaps.ready(init);
-                function init()
-                {
-                    var myMap = new ymaps.Map("map", {
-                        center: [59.936428, 30.289019],
-                        zoom: 10,
-                        controls: [],
-                    }, {
-                        searchControlProvider: 'yandex#search'
-                    });
-                    ymaps.geolocation.get({mapStateAutoApply: true}).then(function (result) {
-                        myMap.geoObjects.add(result.geoObjects);
-                    });
-                    myMap.controls.add('routeButtonControl');
-                    var geoloc = new ymaps.control.GeolocationControl();
-                    geoloc.events.add('locationchange', function (event)
-                    {
-                        var position = event.get('position'),
-                        locationPlacemark = new ymaps.Placemark(position);
-                        myMap.geoObjects.add(locationPlacemark);
-                        myMap.panTo(position);
-                    });
-                    myMap.controls.add('geolocationControl');
+<head>
+    <title>Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!--<meta name="viewport" content="width=device-width,height=device-height, user-scalable=no" />-->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=0071cd7a-8aca-4d08-b24a-e962e2416234&lang=ru_RU" type="text/javascript">
+    </script>
+    <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            background-color: black;
+        }
+    </style>
+    <script type="text/javascript">
+        ymaps.ready(init);
+        function init()
+        {
+            // Создание карты.
+            var myMap = new ymaps.Map("map", {
+
+                center: [59.936428, 30.289019],
+                zoom: 13,
+                controls: [],
+            }, {
+                searchControlProvider: 'browser#search'
+            });
+            // myMap.controls.add('zoomControl');
+            ymaps.geolocation.get({
+            // Выставляем опцию для определения положения по ip    provider: 'yandex',
+            // Карта автоматически отцентрируется по положению пользователя.
+            mapStateAutoApply: true}).then(function (result) {
+            myMap.geoObjects.add(result.geoObjects);
+            });
+            myMap.controls.add('routePanelControl', {
+                maxWidth: 100,
+            });
+            var routePanel = myMap.controls.get('routePanelControl').routePanel;
+            routePanel.options.set({
+                types : {
+                    "auto" : true,
+                    "pedestrian" : true
                 }
-            </script>
-        <style>
-                html, body, #map {
-                    width: 100%;
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                }
-                #map {
-                    background-color: black;
-                }
-            </style>
+            });
+            myMap.controls.add('trafficControl');
+            myMap.controls.get('trafficControl').getProvider('traffic#actual').state.set('infoLayerShown', true);
+            var geoloc = new ymaps.control.GeolocationControl();
+            geoloc.events.add('locationchange', function (event)
+            {
+                var position = event.get('position'),
+                locationPlacemark = new ymaps.Placemark(position);
+                myMap.geoObjects.add(locationPlacemark);
+                myMap.panTo(position);
+            });
+
+            var control = myMap.controls.get('routePanelControl', {maxHeight : 100});
+            var multiRoutePromise = control.routePanel.getRouteAsync();
+            multiRoutePromise.then(function(multiRoute) {
+                multiRoute.model.events.add('requestsuccess', function() {
+                    var activeRoute = multiRoute.getActiveRoute();
+
+                    if (activeRoute) {
+                        // Вывод информации об активном маршруте.
+                        len = activeRoute.properties.get("distance").text;
+                        timetx = activeRoute.properties.get("durationInTraffic");
+                        var time = 0;
+                        if (timetx == null)
+                        {
+                            var lenr = "";
+                            for (i = 0; i < len.length; i++)
+                            {
+                                if (len[i] == ' ' || len[i] == 'к' || len[i] == 'м')
+                                    break;
+                                else
+                                {
+                                    lenr += len[i];
+                                }
+                            }
+                            var lenrr = "";
+                            for (i = 0; i < lenr.length - 1; i++)
+                                lenrr += lenr[i];
+                            lenrr = parseInt(lenrr);
+                            if (len[len.length - 2] == 'к')
+                                lenrr *= 1000;
+                            time = lenrr / 85;
+                            time = Math.ceil(time);
+                        }
+                        else
+                        {
+                            timetx = timetx.text;
+                            var a = [];
+                            var ind = 0;
+                            var snow = "";
+                            for (i = 0; i < timetx.length; ++i)
+                            {
+                                if (timetx[i] >= '0' && timetx[i] <= '9')
+                                {
+                                    while (i < timetx.length && timetx[i] >= '0' && timetx[i] <= '9')
+                                    {
+                                        snow += timetx[i];
+                                        i++;
+                                    }
+                                    a.push(snow);
+                                    snow = "";
+                                    ++ind;
+                                }
+                            }
+                            a.reverse();
+                            var b = [1, 60, 24]
+                            for (i = 0; i < a.length; i++)
+                            {
+                                time += b[i] * (parseInt(a[i]));
+                            }
+                        }
+                        Android.goData(time);
+                    }
+                });
+            },
+            function (err) {
+                console.log(err);
+            });
+        }
+    </script>
     </head>
     <body>
-        <div id="map">
-
-        </div>
+        <div id="map"></div>
     </body>
 </html>
