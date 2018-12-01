@@ -31,23 +31,18 @@ class AddActivity : AppCompatActivity() {
         setListViewListener()
         setCurrentTimeTextView()
 
-        setAlarmBtn.setOnClickListener {
-            val manager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val myIntent = Intent(this, AlarmReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0)
+        okBtn.setOnClickListener{ _ ->
 
-            manager.set(AlarmManager.RTC_WAKEUP, dateAndTime.timeInMillis, pendingIntent)
-            Toast.makeText(this, getString(R.string.alarm_complete), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Напоминание установлено", Toast.LENGTH_LONG).show();
+            val ResultIntent = Intent(this, MainActivity::class.java)
+            ResultIntent.putExtra("dateandtime", dateAndTime.timeInMillis.toLong())
+            setResult(android.app.Activity.RESULT_OK, ResultIntent)
+            finish()
         }
 
         cancelBtn.setOnClickListener { _ ->
-            startMainActivity()
+            finish()
         }
-    }
-
-    private fun startMainActivity() {
-        val intent = Intent(this.applicationContext, MainActivity::class.java)
-        startActivity(intent)
     }
 
     private fun setCurrentTimeTextView() {
