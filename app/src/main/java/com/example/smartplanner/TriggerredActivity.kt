@@ -8,6 +8,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.os.PowerManager
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager
 import android.widget.Toast
@@ -36,6 +37,13 @@ class TriggerredActivity : AppCompatActivity() {
         r.play()
         shutBtn.setOnClickListener{ _ ->
             r.stop();
+
+            val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
+            with (sharedPref.edit()) {
+                putBoolean("toggle_state",false)
+                commit()
+            }
+
             screenOn.release()
             finish()
         }

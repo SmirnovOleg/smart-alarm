@@ -28,7 +28,7 @@ class AddActivity : AppCompatActivity() {
     private val dateAndTime = Calendar.getInstance()
     val REQUEST_CODE = 124
     private var routeTime = 0L
-    private var preparingTime = 60L
+    private var preparingTime = 5L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

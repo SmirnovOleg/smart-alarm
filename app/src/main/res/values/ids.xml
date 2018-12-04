@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="my_toogle_1" type="id"/>
+    <item name="my_text" type="id"/>
+</resources>

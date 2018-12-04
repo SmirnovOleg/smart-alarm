@@ -42,7 +42,7 @@
 
     <TextView
             android:id="@+id/seekBarText"
-            android:text="Время, чтобы собраться: 60 минут"
+            android:text="Время, чтобы собраться: 5 минут"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
@@ -57,7 +57,7 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="60"
+            android:progress="5"
             android:max="120"
             app:layout_constraintTop_toBottomOf="@id/seekBarText"
             android:layout_margin="10sp"
